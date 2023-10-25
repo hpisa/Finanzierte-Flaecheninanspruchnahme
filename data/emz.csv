@@ -1,0 +1,31 @@
+BA;NU;Bez_BA;Bez_NU;EMZ_plus;Kommentar
+1;1;Bauflächen;Gebäude;-100;
+1;2;Bauflächen;Gebäudenebenflächen;-100;
+2;1;landwirtschaftlich genutzte Grundflächen;Äcker, Wiesen oder Weiden;;hier müsste flächendeckend die echte EMZ vorhanden sein
+2;2;landwirtschaftlich genutzte Grundflächen;Dauerkulturanlagen oder Erwerbsgärten;;hier müsste flächendeckend die echte EMZ vorhanden sein
+2;3;landwirtschaftlich genutzte Grundflächen;Verbuschte Flächen;200;
+3;1;Gärten;Gärten;150;
+4;1;weingärten;Weingärten;150;oder EMZ?
+5;1;Alpen;Alpen;300;
+6;1;Wald;Wälder;500;
+6;2;Wald;Krummholzflächen;500;
+6;3;Wald;Forststraßen;20;
+7;1;Gewässer;Fließende Gewässer;500;
+7;2;Gewässer;Stehende Gewässer;500;
+7;3;Gewässer;Gewässerrandflächen;1000;
+7;4;Gewässer;Feuchtgebiete;1000;
+8;1;Sonstige;Sonstige Straßenverkehrsanlagen;1;
+8;2;Sonstige;Sonstige Schienenverkehrsanlagen;1;
+8;3;Sonstige;Sonstige Verkehrsrandflächen;100;
+8;4;Sonstige;Sonstige Parkplätze;-100;
+8;5;Sonstige;Sonstige Betriebsflächen;-100;
+8;6;Sonstige;Sonstige Abbauflächen, Halden und Deponien;-100;
+8;7;Sonstige;Sonstige Freizeitflächen;50;
+8;8;Sonstige;Sonstige Friedhöfe;100;
+8;9;Sonstige;Sonstige Fels- und Geröllflächen;300;
+8;10;Sonstige;Sonstige Vegetationsarme Flächen;300;
+8;11;Sonstige;Sonstige Gletscher;1000;
+9;1;;Rechtlich Weingarten;1;noch klären
+9;2;;Rechtlich kein Weingarten;1;noch klären
+9;3;;Rechtlich Wald;1;noch klären
+9;4;;Rechtlich nicht Wald;1;noch klären
