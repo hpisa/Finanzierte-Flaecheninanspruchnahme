@@ -35,26 +35,33 @@ df <- rbindlist(laender_dfs)
 
 # mit den "Ertragsmesszahlen" aus dem emz.csv file mergen
 df <- merge(df, df_emz[, c("BA","NU","EMZ_plus")], by = c("BA","NU"))
+
+# EMZ_plus ist noch nicht flaechenabhaengig (waehrend Agrar-EMZ = Flaeche in Ar * Wertzahl)
+# df$FLAECHE ist in qm -> rechne in Ar um und multipliziere mit EMZ_plus-Spalte
+df$EMZ_plus <- df$FLAECHE/100 * df$EMZ_plus
+
 df$EMZ_plus <- ifelse(is.na(df$EMZ), df$EMZ_plus, df$EMZ)  #die Agrar-EMZ in die EMZ-plus-Spalte speichern, ueberall dort, wo EMZ nicht NAN
 
 
 print(paste0("NANs in EMZ_plus nach vorhandenen EMZ = ", sum(is.na(df$EMZ_plus))))
 
 # da manche Agrarflaechen keine BEV-EMZ haben, gibt es noch einige NANs in der EMZ_plus-Spalte
-# => fuer diese Agrarflaechen nehmen wir den Gemeinde-Mittelwert der Agrarflaechen-EMZ:
-emz_mean_by_KGNR <- df[!is.na(EMZ), list(EMZ_mean = mean(EMZ)), by = KG.NR]  # Mittelwert nach Gemeinde, von allen Zeilen, wo EMZ nicht NAN enthaelt
+# => fuer diese Agrarflaechen nehmen wir den gewichteten Gemeinde-Mittelwert der Agrarflaechen-EMZ (pro Flaeche mal Flaeche):
+emz_mean_by_KGNR <- df[!is.na(df$EMZ), list(EMZ_mean = weighted.mean(EMZ/FLAECHE, FLAECHE)), by = KG.NR]
     # Achtung: Manche Gemeinden haben NUR NAN in EMZ-Spalte => die fallen hier raus
+
 df <- merge(df, emz_mean_by_KGNR, by = "KG.NR", all.x = TRUE)  # Mittelwerte dazuspeichern
     # all.x = TRUE garantiert, dass alle Zeilen von df gespeichert werden, selbst wenn eine
     # entsprechende KG.NR in emz_mean_by_KGNR fehlt (weil die Gemeinde nur NANs in EMZ-Spalte hatte)
-df$EMZ_plus <- ifelse(is.na(df$EMZ_plus), df$EMZ_mean, df$EMZ_plus)  #ueberall, wo EMZ_plus noch NAN ist, nimm Mittelwert stattdessen
+df$EMZ_plus <- ifelse(is.na(df$EMZ_plus), round(df$EMZ_mean * df$FLAECHE, 2), df$EMZ_plus)  #ueberall, wo EMZ_plus noch NAN ist, nimm Mittelwert/qm stattdessen und multipliziere mit Flaeche
 
 print(paste0("NANs in EMZ_plus nach Gemeindeschnitt-Hinzufügung = ", sum(is.na(df$EMZ_plus))))
 
 # => Handvoll Agrar-Grundstuecke haben immer noch NAN in EMZ_plus (weil Gemeinde keine einzige Agrar-EMZ hat)
 # => nimm hier Bundesland-Mittel!
-emz_mean_land <- round(mean(df[!is.na(EMZ), EMZ]), 2)
-df$EMZ_plus <- ifelse(is.na(df$EMZ_plus), emz_mean_land, df$EMZ_plus)
+emz_mean_land <- weighted.mean(df$EMZ/df$FLAECHE, df$FLAECHE, na.rm = TRUE)  # gewichtetes Mittel pro Fläche ohne NAs
+df$EMZ_plus <- ifelse(is.na(df$EMZ_plus), round(emz_mean_land * df$FLAECHE, 2), df$EMZ_plus)
+
 print(paste0("NANs in EMZ_plus nach Landschnitt-Hinzufügung = ", sum(is.na(df$EMZ_plus))))
 
 
@@ -81,31 +88,39 @@ for(land_folder in land_folders){ #gehe alle Bundeslaender durch
   df_land <- get_land_df(land_folder)
   #df_land = ein df mit allen Gemeinden des aktuellen Bundeslandes
   
-  df_land <- merge(df_land, df_emz[, c("BA","NU","EMZ_plus")],
-                   by = c("BA","NU"))
+  df_land <- merge(df_land, df_emz[, c("BA","NU","EMZ_plus")], by = c("BA","NU"))
   #df_land um die Ertragsmesszahlen aus emz.csv erweitern (neue EMZ_plus-Spalte)
   
-  df_land$EMZ_plus <- ifelse(is.na(df_land$EMZ), df_land$EMZ_plus, df_land$EMZ)  #kopiere die EMZ, wo vorhanden, in die EMZ_plus-Spalte
+  # mache EMZ_plus flaechenabhaengig (wie Agrar-EMZ = Flaeche in Ar * Wertzahl)
+  # df$FLAECHE ist in qm -> rechne in Ar um und multipliziere mit EMZ_plus-Spalte
+  df_land$EMZ_plus <- df_land$FLAECHE/100 * df_land$EMZ_plus
+  
+  df_land$EMZ_plus <- ifelse(is.na(df_land$EMZ), df_land$EMZ_plus, df_land$EMZ)  #kopiere die Agrar-EMZ, wo vorhanden, in die EMZ_plus-Spalte
   
   print(paste0("NANs in EMZ_plus nach vorhandenen EMZ in ", land, " = ", sum(is.na(df_land$EMZ_plus))))
   
-  #fuer Agrarflaechen, die keine BEV-EMZ haben, nehmen wir den Gemeinde-Mittelwert der Agrarflaechen-EMZ:
-  emz_mean_by_KGNR <- df_land[!is.na(EMZ), list(EMZ_mean = mean(EMZ)), by = KG.NR]  # Mittelwert nach Gemeinde, von allen Zeilen, wo EMZ nicht NAN enth?lt
-    # Achtung: Manche Gemeinden haben NUR NAN in EMZ-Spalte => die fallen hier raus
+  
+  # da manche Agrarflaechen keine BEV-EMZ haben, gibt es noch einige NANs in der EMZ_plus-Spalte
+  # => fuer diese Agrarflaechen nehmen wir den Gemeinde-Mittelwert der Agrarflaechen-EMZ (pro Flaeche mal Flaeche):
+  emz_mean_by_KGNR <- df_land[!is.na(df_land$EMZ),
+                              list(EMZ_mean = weighted.mean(EMZ/FLAECHE, FLAECHE)),
+                              by = KG.NR]   # Achtung: Manche Gemeinden haben NUR NAN in EMZ-Spalte => die fallen hier raus
+  
   df_land <- merge(df_land, emz_mean_by_KGNR, by = "KG.NR", all.x = TRUE)  # Mittelwerte dazuspeichern
-    # all.x = TRUE garantiert, dass alle Zeilen von df_land gespeichert werden, selbst wenn eine
-    # entsprechende KG.NR in emz_mean_by_KGNR fehlt (weil die Gemeinde nur NANs in EMZ-Spalte hatte)
+    # all.x = TRUE garantiert, dass alle Zeilen von df_land gespeichert werden, selbst wenn eine entsprechende KG.NR in emz_mean_by_KGNR fehlt
   df_land$EMZ_plus <- ifelse(is.na(df_land$EMZ_plus),
-                             df_land$EMZ_mean, df_land$EMZ_plus)  #ueberall, wo EMZ_plus noch NAN ist, nimm Mittelwert stattdessen
+                             round(df_land$EMZ_mean * df_land$FLAECHE, 2),
+                             df_land$EMZ_plus)  #ueberall, wo EMZ_plus noch NAN ist, nimm Mittelwert stattdessen
   
   print(paste0("NANs in EMZ_plus nach Gemeinde-Schnitt in ", land, " = ", sum(is.na(df_land$EMZ_plus))))
   
   # => Handvoll Agrar-Grundstuecke haben immer noch NAN in EMZ_plus (weil Gemeinde keine einzige Agrar-EMZ hat)
-  # => nimm hier Bundesland-Mittel!
+  # => nimm hier gewichtetes Bundesland-Mittel!
   if(sum(is.na(df_land$EMZ_plus))>0) {
-    emz_mean_land <- mean(df_land[!is.na(EMZ), EMZ])
+    emz_mean_land <- weighted.mean(df_land$EMZ/df_land$FLAECHE, df_land$FLAECHE, na.rm = TRUE)
     df_land$EMZ_plus <- ifelse(is.na(df_land$EMZ_plus),
-                               emz_mean_land, df_land$EMZ_plus)
+                               round(emz_mean_land * df_land$FLAECHE, 2),
+                               df_land$EMZ_plus)
     print(paste0("NANs in EMZ_plus nach Land-Schnitt in ", land, " = ", sum(is.na(df_land$EMZ_plus))))
   }
   
@@ -141,5 +156,3 @@ for(land_folder in land_folders){ #gehe alle Bundeslaender durch
     
   }
 }
-
-
