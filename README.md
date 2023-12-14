@@ -3,7 +3,10 @@ Aufbereitung des Grundstücksverzeichnisses des BEV, Berechnung des Flächenindi
 
 ----------
 
-Datenquelle: https://data.bev.gv.at/geonetwork/srv/ger/catalog.search#/search?resultType=details&sortBy=relevance&fast=index&_content_type=json&from=1&to=100&any=kataster%20grundst%C3%BCcksverzeichnis%20csv
+Datenquelle:
+
+https://data.bev.gv.at/geonetwork/srv/ger/catalog.search#/search?resultType=details&sortBy=relevance&fast=index&_content_type=json&from=1&to=100&any=kataster%20grundst%C3%BCcksverzeichnis%20csv
+
 Bzw.
 
 Stichtag 01.04.2023: https://data.bev.gv.at/geonetwork/srv/ger/catalog.search#/metadata/5a56bef7-7b60-4822-9da7-1d118f312a4d
