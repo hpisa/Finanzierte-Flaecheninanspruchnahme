@@ -2,22 +2,22 @@ library(data.table)
 
 
 data_dir <- "../data/"
-bundesland_dir <- paste0(data_dir,"bundeslaender/")
+bundesland_dir <- paste0(data_dir, "bundeslaender/")
 
-df_emz <- data.frame(read.csv2(paste0(data_dir,"emz.csv")))
+df_emz <- data.frame(read.csv2(paste0(data_dir, "emz.csv")))
 
 land_folders <- list.files(bundesland_dir)
 
 # file (d.h. eine Gemeinde) aus land_folder (d.h. Bundesland) als dataframe einlesen
-get_df <- function(land_folder,file){
-  return(data.frame(read.csv2(paste0(bundesland_dir,land_folder,"/",file))) )
+get_df <- function(land_folder, file){
+  return(data.frame(read.csv2(paste0(bundesland_dir, land_folder, "/", file))) )
 }
 
 # alle files (Gemeinden) eines land_folder (Bundeslandes) einlesen und in
-# einem gro?en gemeinsamen dataframe abspeichern
+# einem grossen gemeinsamen dataframe abspeichern
 get_land_df <- function(land_folder){
-  land_files <- list.files( paste0(bundesland_dir,land_folder) )
-  files_df <- lapply(land_files,function(file) get_df(land_folder,file))
+  land_files <- list.files( paste0(bundesland_dir, land_folder) )
+  files_df <- lapply(land_files, function(file) get_df(land_folder, file))
   df_land <- rbindlist(files_df)
   return(df_land)
 }
@@ -25,7 +25,7 @@ get_land_df <- function(land_folder){
 
 #################################################
 # V1: Alle Bundeslaender in einem Dataframe abspeichern
-# ACHTUNG: zu gro? fuer Excel! Fuer Excel-Darstellung s. unten
+# ACHTUNG: zu gross fuer Excel! Fuer Excel-Darstellung s. unten
 #################################################
 
 # Alle Bundeslaender (alle Gemeinden) einlesen...
@@ -55,25 +55,27 @@ df <- merge(df, emz_mean_by_KGNR, by = "KG.NR", all.x = TRUE)  # Mittelwerte daz
     # entsprechende KG.NR in emz_mean_by_KGNR fehlt (weil die Gemeinde nur NANs in EMZ-Spalte hatte)
 df$EMZ_plus <- ifelse(is.na(df$EMZ_plus), round(df$EMZ_mean * df$FLAECHE, 2), df$EMZ_plus)  #ueberall, wo EMZ_plus noch NAN ist, nimm Mittelwert/qm stattdessen und multipliziere mit Flaeche
 
-print(paste0("NANs in EMZ_plus nach Gemeindeschnitt-Hinzufügung = ", sum(is.na(df$EMZ_plus))))
+print(paste0("NANs in EMZ_plus nach Gemeindeschnitt-Hinzufuegung = ", sum(is.na(df$EMZ_plus))))
 
 # => Handvoll Agrar-Grundstuecke haben immer noch NAN in EMZ_plus (weil Gemeinde keine einzige Agrar-EMZ hat)
 # => nimm hier Bundesland-Mittel!
-emz_mean_land <- weighted.mean(df$EMZ/df$FLAECHE, df$FLAECHE, na.rm = TRUE)  # gewichtetes Mittel pro Fläche ohne NAs
+emz_mean_land <- weighted.mean(df$EMZ/df$FLAECHE, df$FLAECHE, na.rm = TRUE)  # gewichtetes Mittel pro Flaeche ohne NAs
 df$EMZ_plus <- ifelse(is.na(df$EMZ_plus), round(emz_mean_land * df$FLAECHE, 2), df$EMZ_plus)
 
-print(paste0("NANs in EMZ_plus nach Landschnitt-Hinzufügung = ", sum(is.na(df$EMZ_plus))))
+print(paste0("NANs in EMZ_plus nach Landschnitt-Hinzufuegung = ", sum(is.na(df$EMZ_plus))))
 
+df <- df[order(df$KG.NR, df$GST.NR)]
+names(df)[13] <- "EZ" #Einlagezahl-Spalte umbenennen ("EZ..01.04.2023." => "EZ")
 
-write.csv2(df[, c("KG.NR","GST.NR","BA","NU","FLAECHE","EMZ","EMZ_plus")],
-           paste0(data_dir,"gesamt-oesterreich_emz-plus.csv"),
+write.csv2(df[, c("KG.NR", "GST.NR", "KG.EZ", "EZ", "BA", "NU", "FLAECHE", "EMZ", "EMZ_plus")],
+           paste0(data_dir, "gesamt-oesterreich_emz-plus.csv"),
            row.names = FALSE)
 
 
 
 #################################################
-# V2: Da die obige Ergebnistabelle zu gro? ist fuer Excel, ist es
-# sinnvoller, die Bundeslaender einzeln zu lassen und au?erdem nach
+# V2: Da die obige Ergebnistabelle zu gross ist fuer Excel, ist es
+# sinnvoller, die Bundeslaender einzeln zu lassen und ausserdem nach
 # der max. Anzahl von Excel-Zeilen zu sub-unterteilen
 #################################################
 
@@ -124,7 +126,8 @@ for(land_folder in land_folders){ #gehe alle Bundeslaender durch
     print(paste0("NANs in EMZ_plus nach Land-Schnitt in ", land, " = ", sum(is.na(df_land$EMZ_plus))))
   }
   
-  df_land <- df_land[order(df_land$KG.NR)]  #Reihenfolge sollte an sich eh schon stimmen (aufsteigend nach Gemeindenr), nur um fuer den naechsten Schritt sicher zu sein
+  df_land <- df_land[order(df_land$KG.NR, df_land$GST.NR)]
+  names(df_land)[13] <- "EZ" #Einlagezahl-Spalte umbenennen ("EZ..01.04.2023." => "EZ")
   
   # Bundesland in mehrere csv-Dateien unterteilen, sodass keine die
   # maximale Laenge von Excel ueberschreitet, aber ohne in der Mitte einer
@@ -145,9 +148,9 @@ for(land_folder in land_folders){ #gehe alle Bundeslaender durch
     last_kg_nr <- tail(df_save,1)$KG.NR  #hoechste KG-Nr  in df_save nach bei-letzter-vollstaendiger-Gemeinde-Abschneiden
     first_kg_nr <- head(df_save,1)$KG.NR  #niedrigste KG-Nr in df_save
     
-    write.csv2(df_save[,c("KG.NR","GST.NR","BA","NU","FLAECHE","EMZ","EMZ_plus")],
-               paste0(data_dir,"bundeslaender_emz-plus/",land,
-                      "_KGNR_",first_kg_nr,"-",last_kg_nr,
+    write.csv2(df_save[,c("KG.NR", "GST.NR", "KG.EZ", "EZ", "BA", "NU", "FLAECHE", "EMZ", "EMZ_plus")],
+               paste0(data_dir, "bundeslaender_emz-plus/", land,
+                      "_KGNR_", first_kg_nr, "-", last_kg_nr,
                       "_emz-plus.csv"),
                row.names = FALSE
                )
@@ -156,3 +159,5 @@ for(land_folder in land_folders){ #gehe alle Bundeslaender durch
     
   }
 }
+
+
