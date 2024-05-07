@@ -1,31 +1,31 @@
 BA;NU;Bez_BA;Bez_NU;EMZ_plus;Kommentar
-1;1;Baufl‰chen;Geb‰ude;-100;
-1;2;Baufl‰chen;Geb‰udenebenfl‰chen;-100;
-2;1;landwirtschaftlich genutzte Grundfl‰chen;ƒcker, Wiesen oder Weiden;;hier m¸sste fl‰chendeckend die echte EMZ vorhanden sein
-2;2;landwirtschaftlich genutzte Grundfl‰chen;Dauerkulturanlagen oder Erwerbsg‰rten;;hier m¸sste fl‰chendeckend die echte EMZ vorhanden sein
-2;3;landwirtschaftlich genutzte Grundfl‰chen;Verbuschte Fl‰chen;200;
-3;1;G‰rten;G‰rten;150;
-4;1;weing‰rten;Weing‰rten;150;oder EMZ?
+1;1;Baufl√§chen;Geb√§ude;-100;
+1;2;Baufl√§chen;Geb√§udenebenfl√§chen;-100;
+2;1;landwirtschaftlich genutzte Grundfl√§chen;√Ñcker, Wiesen oder Weiden;;echte EMZ heranziehen (bzw aus dieser berechnen)
+2;2;landwirtschaftlich genutzte Grundfl√§chen;Dauerkulturanlagen oder Erwerbsg√§rten;;echte EMZ heranziehen (bzw aus dieser berechnen)
+2;3;landwirtschaftlich genutzte Grundfl√§chen;Verbuschte Fl√§chen;;echte EMZ heranziehen (bzw aus dieser berechnen)
+3;1;G√§rten;G√§rten;150;
+4;1;weing√§rten;Weing√§rten;150;oder EMZ?
 5;1;Alpen;Alpen;300;
-6;1;Wald;W‰lder;500;
-6;2;Wald;Krummholzfl‰chen;500;
-6;3;Wald;Forststraﬂen;20;
-7;1;Gew‰sser;Flieﬂende Gew‰sser;500;
-7;2;Gew‰sser;Stehende Gew‰sser;500;
-7;3;Gew‰sser;Gew‰sserrandfl‰chen;1000;
-7;4;Gew‰sser;Feuchtgebiete;1000;
-8;1;Sonstige;Sonstige Straﬂenverkehrsanlagen;1;
+6;1;Wald;W√§lder;500;
+6;2;Wald;Krummholzfl√§chen;500;
+6;3;Wald;Forststra√üen;20;
+7;1;Gew√§sser;Flie√üende Gew√§sser;500;
+7;2;Gew√§sser;Stehende Gew√§sser;500;
+7;3;Gew√§sser;Gew√§sserrandfl√§chen;1000;
+7;4;Gew√§sser;Feuchtgebiete;1000;
+8;1;Sonstige;Sonstige Stra√üenverkehrsanlagen;1;
 8;2;Sonstige;Sonstige Schienenverkehrsanlagen;1;
-8;3;Sonstige;Sonstige Verkehrsrandfl‰chen;100;
-8;4;Sonstige;Sonstige Parkpl‰tze;-100;
-8;5;Sonstige;Sonstige Betriebsfl‰chen;-100;
-8;6;Sonstige;Sonstige Abbaufl‰chen, Halden und Deponien;-100;
-8;7;Sonstige;Sonstige Freizeitfl‰chen;50;
-8;8;Sonstige;Sonstige Friedhˆfe;100;
-8;9;Sonstige;Sonstige Fels- und Gerˆllfl‰chen;300;
-8;10;Sonstige;Sonstige Vegetationsarme Fl‰chen;300;
+8;3;Sonstige;Sonstige Verkehrsrandfl√§chen;100;
+8;4;Sonstige;Sonstige Parkpl√§tze;-100;
+8;5;Sonstige;Sonstige Betriebsfl√§chen;-100;
+8;6;Sonstige;Sonstige Abbaufl√§chen, Halden und Deponien;-100;
+8;7;Sonstige;Sonstige Freizeitfl√§chen;50;
+8;8;Sonstige;Sonstige Friedh√∂fe;100;
+8;9;Sonstige;Sonstige Fels- und Ger√∂llfl√§chen;300;
+8;10;Sonstige;Sonstige Vegetationsarme Fl√§chen;300;
 8;11;Sonstige;Sonstige Gletscher;1000;
-9;1;;Rechtlich Weingarten;1;noch kl‰ren
-9;2;;Rechtlich kein Weingarten;1;noch kl‰ren
-9;3;;Rechtlich Wald;1;noch kl‰ren
-9;4;;Rechtlich nicht Wald;1;noch kl‰ren
+9;1;;Rechtlich Weingarten;1;noch kl√§ren
+9;2;;Rechtlich kein Weingarten;1;noch kl√§ren
+9;3;;Rechtlich Wald;1;noch kl√§ren
+9;4;;Rechtlich nicht Wald;1;noch kl√§ren
