@@ -1,6 +1,8 @@
 # Finanzierte-Flaecheninanspruchnahme
 Aufbereitung des Grundstücksverzeichnisses des BEV, Berechnung des Flächenindikators aller Grundstücke ("EMZ_plus") zum Vergleich der Auswirkung von Bodenversiegelung unterschiedlicher Bauprojekte
 
+Link zum Abschlussbericht des Projekts (weiterführende Informationen): https://startclim.at/fileadmin/user_upload/StartClim2023/StCl23.G._Final.pdf
+
 ----------
 
 Datenquelle:
